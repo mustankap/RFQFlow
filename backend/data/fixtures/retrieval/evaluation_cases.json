@@ -1,0 +1,593 @@
+[
+  {
+    "case_id": "ideal-1",
+    "rfq": {
+      "rfq_id": "EVAL-0",
+      "items": [
+        {
+          "line_id": "LINE-001",
+          "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 1,
+            "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "stainless steel",
+            "material_grade": "304",
+            "product_form": "sheet",
+            "quantity": 12,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.06 in",
+              "value": 0.06,
+              "unit": "in",
+              "normalized_inches": 0.06,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-SS304-060"
+    ]
+  },
+  {
+    "case_id": "ideal-2",
+    "rfq": {
+      "rfq_id": "EVAL-1",
+      "items": [
+        {
+          "line_id": "LINE-002",
+          "original_text": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 2,
+            "text_excerpt": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "carbon steel",
+            "material_grade": "A36",
+            "product_form": "plate",
+            "quantity": 5,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.25 in",
+              "value": 0.25,
+              "unit": "in",
+              "normalized_inches": 0.25,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-A36-250"
+    ]
+  },
+  {
+    "case_id": "ideal-3",
+    "rfq": {
+      "rfq_id": "EVAL-2",
+      "items": [
+        {
+          "line_id": "LINE-003",
+          "original_text": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 3,
+            "text_excerpt": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long"
+          },
+          "specification": {
+            "material_family": "aluminum",
+            "material_grade": "6061",
+            "product_form": "plate",
+            "quantity": 10,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.25 in",
+              "value": 0.25,
+              "unit": "in",
+              "normalized_inches": 0.25,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "24 in",
+              "value_in": 24,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-AL6061-250"
+    ]
+  },
+  {
+    "case_id": "missing-grade",
+    "rfq": {
+      "rfq_id": "missing-grade",
+      "items": [
+        {
+          "line_id": "LINE-003",
+          "original_text": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 3,
+            "text_excerpt": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long"
+          },
+          "specification": {
+            "material_family": "aluminum",
+            "material_grade": null,
+            "product_form": "plate",
+            "quantity": 10,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.25 in",
+              "value": 0.25,
+              "unit": "in",
+              "normalized_inches": 0.25,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "24 in",
+              "value_in": 24,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-AL6061-250",
+      "DEMO-AL5052-250"
+    ]
+  },
+  {
+    "case_id": "unknown-material",
+    "rfq": {
+      "rfq_id": "unknown-material",
+      "items": [
+        {
+          "line_id": "LINE-001",
+          "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 1,
+            "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "titanium",
+            "material_grade": "5",
+            "product_form": "sheet",
+            "quantity": 12,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.06 in",
+              "value": 0.06,
+              "unit": "in",
+              "normalized_inches": 0.06,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": []
+  },
+  {
+    "case_id": "wrong-grade",
+    "rfq": {
+      "rfq_id": "wrong-grade",
+      "items": [
+        {
+          "line_id": "LINE-001",
+          "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 1,
+            "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "stainless steel",
+            "material_grade": "999",
+            "product_form": "sheet",
+            "quantity": 12,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.06 in",
+              "value": 0.06,
+              "unit": "in",
+              "normalized_inches": 0.06,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": []
+  },
+  {
+    "case_id": "gauge-unresolved",
+    "rfq": {
+      "rfq_id": "gauge-unresolved",
+      "items": [
+        {
+          "line_id": "LINE-001",
+          "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 1,
+            "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "stainless steel",
+            "material_grade": "304",
+            "product_form": "sheet",
+            "quantity": 12,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "16ga",
+              "normalized_inches": null,
+              "conversion_status": "requires_verification"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-SS304-060",
+      "DEMO-SS304-120"
+    ]
+  },
+  {
+    "case_id": "missing-mtr",
+    "rfq": {
+      "rfq_id": "missing-mtr",
+      "items": [
+        {
+          "line_id": "LINE-001",
+          "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 1,
+            "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "stainless steel",
+            "material_grade": "304",
+            "product_form": "sheet",
+            "quantity": 12,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.06 in",
+              "value": 0.06,
+              "unit": "in",
+              "normalized_inches": 0.06,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [
+              "MTR"
+            ],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-SS304-060"
+    ],
+    "warning_contains": "Requested MTR evidence is missing"
+  },
+  {
+    "case_id": "missing-prices",
+    "rfq": {
+      "rfq_id": "missing-prices",
+      "items": [
+        {
+          "line_id": "LINE-002",
+          "original_text": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 2,
+            "text_excerpt": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long"
+          },
+          "specification": {
+            "material_family": "carbon steel",
+            "material_grade": "A36",
+            "product_form": "plate",
+            "quantity": 5,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.25 in",
+              "value": 0.25,
+              "unit": "in",
+              "normalized_inches": 0.25,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "96 in",
+              "value_in": 96,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-A36-250"
+    ],
+    "warning_contains": "No supplier_prices"
+  },
+  {
+    "case_id": "clarified-grade-old-text",
+    "rfq": {
+      "rfq_id": "clarified-grade-old-text",
+      "items": [
+        {
+          "line_id": "LINE-003",
+          "original_text": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long",
+          "source_reference": {
+            "document_id": "SYNTH-RFQ-DOC-001",
+            "page": null,
+            "sheet": null,
+            "row": 3,
+            "text_excerpt": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long"
+          },
+          "specification": {
+            "material_family": "aluminum",
+            "material_grade": "5052",
+            "product_form": "plate",
+            "quantity": 10,
+            "quantity_unit": "pieces",
+            "thickness": {
+              "raw": "0.25 in",
+              "value": 0.25,
+              "unit": "in",
+              "normalized_inches": 0.25,
+              "conversion_status": "explicit"
+            },
+            "width": {
+              "raw": "24 in",
+              "value_in": 24,
+              "unit_status": "explicit"
+            },
+            "length": {
+              "raw": "48 in",
+              "value_in": 48,
+              "unit_status": "explicit"
+            },
+            "diameter_in": null,
+            "requested_standard": null,
+            "requested_certifications": [],
+            "country_of_origin_requirement": null,
+            "finish": null,
+            "special_requirements": []
+          },
+          "missing_fields": [],
+          "ambiguities": [],
+          "extraction_status": "parsed"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-AL5052-250"
+    ]
+  },
+  {
+    "case_id": "d3-explicit-dimensions",
+    "rfq": {
+      "rfq_id": "d3-explicit-dimensions",
+      "items": [
+        {
+          "raw_input": "20 pcs 304 SS sheet 0.060 x 48 x 96 in",
+          "material": "SS",
+          "grade": "304",
+          "form": "sheet",
+          "dimensions": "0.060 x 48 x 96 in",
+          "quantity": 20,
+          "standard": "ASTM"
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-SS304-060"
+    ],
+    "warning_contains": "Generic ASTM"
+  },
+  {
+    "case_id": "d3-ambiguous-dimensions",
+    "rfq": {
+      "rfq_id": "d3-ambiguous-dimensions",
+      "items": [
+        {
+          "raw_input": "304 SS sheet 16ga 4x8",
+          "material": "SS",
+          "grade": "304",
+          "form": "sheet",
+          "dimensions": "16ga 4x8",
+          "quantity": 12
+        }
+      ]
+    },
+    "relevant_catalog_ids": [
+      "DEMO-SS304-060",
+      "DEMO-SS304-120"
+    ]
+  }
+]

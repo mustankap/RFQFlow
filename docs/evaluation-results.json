@@ -1,0 +1,200 @@
+{
+  "cases": 12,
+  "passed": 12,
+  "model": "openai/text-embedding-3-small",
+  "scope": "Bundled synthetic fixtures only; no general accuracy claim",
+  "results": [
+    {
+      "case_id": "ideal-1",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-SS304-060"
+      ],
+      "expected_ids": [
+        "DEMO-SS304-060"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "024f76af-dd9c-4a86-afb7-a37f1e466ebd"
+    },
+    {
+      "case_id": "ideal-2",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-A36-250"
+      ],
+      "expected_ids": [
+        "DEMO-A36-250"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "f61202f4-c4bb-4653-a853-bb7e2cf43be7"
+    },
+    {
+      "case_id": "ideal-3",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-AL6061-250"
+      ],
+      "expected_ids": [
+        "DEMO-AL6061-250"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "00964bbb-ceb8-439f-b184-d41156597667"
+    },
+    {
+      "case_id": "missing-grade",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-AL5052-250",
+        "DEMO-AL6061-250"
+      ],
+      "expected_ids": [
+        "DEMO-AL5052-250",
+        "DEMO-AL6061-250"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "760f0a7a-f7c5-40a4-adb4-506149fc7f91"
+    },
+    {
+      "case_id": "unknown-material",
+      "recall_at_3": null,
+      "recall_at_5": null,
+      "retrieved_ids": [],
+      "expected_ids": [],
+      "status": "no_candidates",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "33c02f60-92af-478e-a9ff-3c9f42338acd"
+    },
+    {
+      "case_id": "wrong-grade",
+      "recall_at_3": null,
+      "recall_at_5": null,
+      "retrieved_ids": [],
+      "expected_ids": [],
+      "status": "no_candidates",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "d704f1e4-c1e0-449d-8d0b-cad09d12ba5c"
+    },
+    {
+      "case_id": "gauge-unresolved",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-SS304-060",
+        "DEMO-SS304-120"
+      ],
+      "expected_ids": [
+        "DEMO-SS304-060",
+        "DEMO-SS304-120"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "5e05ce33-4925-4477-ba6c-61cd9234fb8d"
+    },
+    {
+      "case_id": "missing-mtr",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-SS304-060"
+      ],
+      "expected_ids": [
+        "DEMO-SS304-060"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "89a0db15-3b29-4670-8b4b-6468bdb3475b"
+    },
+    {
+      "case_id": "missing-prices",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-A36-250"
+      ],
+      "expected_ids": [
+        "DEMO-A36-250"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "750ceedd-3c87-4fb6-9eed-b8d2de2d4c3e"
+    },
+    {
+      "case_id": "clarified-grade-old-text",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-AL5052-250"
+      ],
+      "expected_ids": [
+        "DEMO-AL5052-250"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "16f66cd6-843e-4c1f-8c69-241779b57d33"
+    },
+    {
+      "case_id": "d3-explicit-dimensions",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-SS304-060"
+      ],
+      "expected_ids": [
+        "DEMO-SS304-060"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "12afd8be-bfe9-431e-9124-b3112b01f5d6"
+    },
+    {
+      "case_id": "d3-ambiguous-dimensions",
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "retrieved_ids": [
+        "DEMO-SS304-060",
+        "DEMO-SS304-120"
+      ],
+      "expected_ids": [
+        "DEMO-SS304-060",
+        "DEMO-SS304-120"
+      ],
+      "status": "ok",
+      "passed": true,
+      "conflicts_flagged": true,
+      "fixture_provenance_complete": true,
+      "session_id": "0ab3b0eb-5b0b-498c-9368-a955d73f2108"
+    }
+  ],
+  "mean_recall_at_3": 1.0,
+  "mean_recall_at_5": 1.0
+}
