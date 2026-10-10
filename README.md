@@ -123,3 +123,47 @@ Local query output and the Ninoo review are saved under gitignored `.local/`.
 Still required: canonical SQLite integration, full shared evidence models, hybrid
 ranking, historical/pricing/compliance retrieval, retrieval evaluation, API routes,
 and real PRISM tracing/guardrail/evaluator/Knowledge Base integration.
+
+## RFQ-to-Quote prototype
+
+Local integration adds `POST /api/quote/run` (`{"text":"..."}`) and
+`POST /api/quote/clarify` (`rfq_id`, `answers`: line_id/field/value records).
+Existing parsing endpoints remain available. Workflow sessions are in memory and
+reset on server restart; use one server worker. Clarifications preserve original
+text and line IDs. Questions currently use deterministic templates.
+
+All six catalog products have **DEMO DATA** USD per-piece costs in
+`backend/data/fixtures/retrieval/demo_prices.json`. Selling price uses a **20%
+markup on cost**, rounded to cents using Decimal ROUND_HALF_UP. Totals use rounded
+selling prices; additional charges are zero. Freight/tax, availability and delivery
+are excluded and not established. This is a synthetic demonstration quotation.
+No live benchmarks are loaded: **Market competitiveness not established.**
+Requested ASTM/MTR/origin requirements with no supporting records stay UNVERIFIED
+and block quote readiness. No certification documents are fabricated.
+
+Using the existing environment and configured Nicrron credentials:
+
+```bash
+python -m backend.app.retrieval seed
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+```
+
+In another terminal:
+
+```bash
+python -m scripts.demo_quote
+python -m pytest backend/tests -q
+```
+
+The demo submits two explicitly dimensioned catalog products, then submits
+`20 pcs 304 SS sheet 16ga 4x8` and answers thickness/width/length with verified
+explicit decimal-inch measurements. The answer supplies thickness; the workflow
+never derives decimal thickness from gauge. Provider access and a seeded index
+are required for the live demo. Automated workflow tests mock extraction and use
+clearly labeled test vectors, exercising real Chroma and API orchestration.
+
+Observed integration verification (October 10, 2026): real Nicrron parsing and
+embeddings plus Chroma produced two complete lines and a $1,980.00 synthetic quote.
+The ambiguous gauge/4x8 request returned three questions and no quote; explicit
+buyer thickness/width/length answers resumed to a $2,400.00 synthetic quote.
+These are fixture-specific demo observations, not market or extraction-accuracy claims.

@@ -1,0 +1,14 @@
+{
+  "label": "DEMO DATA",
+  "currency": "USD",
+  "price_unit": "pieces",
+  "markup_percent": "20",
+  "costs": {
+    "DEMO-SS304-060": "100.00",
+    "DEMO-SS304-120": "180.00",
+    "DEMO-SS316-060": "140.00",
+    "DEMO-A36-250": "90.00",
+    "DEMO-AL6061-250": "75.00",
+    "DEMO-AL5052-250": "70.00"
+  }
+}
