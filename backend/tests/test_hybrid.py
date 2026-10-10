@@ -276,3 +276,40 @@ def test_snapshot_closes_connection(service):
         assert connection.execute('SELECT 1').fetchone()[0]==1
     with pytest.raises(sqlite3.ProgrammingError,match='closed'):
         connection.execute('SELECT 1')
+
+
+def test_sheet_pair_has_no_implied_thickness():
+    assert dimensions_in('48x96 in','Sheet')==(None,48,96)
+    assert dimensions_in('4x8 ft','plate')==(None,48,96)
+    assert dimensions_in('48x96','sheet')==(None,None,None)
+    assert dimensions_in('2 in SCH 40','pipe')==(None,None,None)
+    assert dimensions_in('2x4 in','pipe')==(None,None,None)
+
+
+def test_db_branch_dimensions_flags_and_query_text(service):
+    with sqlite3.connect(service.repository.path) as conn:
+        conn.execute("UPDATE product_catalog SET dimensions='48x96 in', thickness_in=NULL, width_in=NULL, length_in=NULL, compliance_flags='MTR_REQUIRED' WHERE catalog_id='DEMO-SS304-060'")
+    with service.repository.snapshot() as repo:
+        product=repo.get_product('DEMO-SS304-060')
+        assert product.thickness_in is None and product.width_in==48 and product.length_in==96
+        assert product.compliance_flags=='MTR_REQUIRED'
+        assert any('not verified' in w for w in product.warnings)
+    service.build_index()
+    sheet=json.loads((FIXTURES/'developer3_rfq.json').read_text())['items'][0]
+    sheet['standard']=None
+    result=service.retrieve_for_line(sheet)
+    candidate=next(c for c in result.supplier_candidates if c.catalog_id=='DEMO-SS304-060')
+    assert any('thickness_in unresolved' in s for s in candidate.unchecked_requirements)
+    from backend.app.retrieval.adapters import adapt_line, query_text
+    pipe=json.loads((FIXTURES/'developer3_rfq.json').read_text())['items'][1]
+    parsed=adapt_line(pipe)
+    assert '2 in SCH 40' in query_text(parsed.specification)
+    assert parsed.specification.thickness.normalized_inches is None
+
+
+def test_changed_sheet_width_uses_current_value_not_old_pair():
+    from backend.app.retrieval.adapters import adapt_line, query_text
+    line=adapt_line({'material':'SS','grade':'304','form':'sheet','dimensions':'48x96 in','width_in':24})
+    text=query_text(line.specification)
+    assert 'width 24 in' in text and '48x96' not in text
+    assert line.specification.thickness.normalized_inches is None

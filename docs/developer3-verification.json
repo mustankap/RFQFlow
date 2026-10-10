@@ -1,0 +1,32 @@
+{
+  "verified_on": "2026-10-10",
+  "source_branch": "origin/db-branch",
+  "source_commit": "f44a80f43bc0a3f6def3dd40ee9b33295cc01e1d",
+  "source_path": "data/rudco_internal.db",
+  "database_sha256": "e8755a78dd95f22012a885a340879f63905f293813d4bcd0f18f05dc6daeb855",
+  "database_unchanged": true,
+  "product_count": 2,
+  "vendor_offer_count": 4,
+  "historical_quote_count": 2,
+  "retrieved_catalog_ids": [
+    "PART-SS304-4896",
+    "PART-CS40-2IN"
+  ],
+  "embedding_model": "openai/text-embedding-3-small",
+  "session_id": "34242a41-3cc5-4eee-a983-1b8a28d20972",
+  "prism_status": "delivered",
+  "trace_ids": [
+    "300fcf28-4b61-43ab-8a35-f4bd4fb291ff",
+    "f82b168c-673d-41b9-b5a0-35f370fdea5c"
+  ],
+  "provenance_complete": false,
+  "unresolved": [
+    "Catalog sheet thickness",
+    "Pipe dimensional equivalence",
+    "Currency and supplier price validity",
+    "Original source references and synthetic flags",
+    "Customer IDs and historical price units/quantities",
+    "Market benchmarks",
+    "MTR and origin evidence"
+  ]
+}

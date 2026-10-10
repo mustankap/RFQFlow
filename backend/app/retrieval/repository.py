@@ -83,11 +83,13 @@ class SQLiteRepository:
 
     def _product(self, row):
         provenance = self._provenance(row, 'product_catalog', row['catalog_id'])
-        dims = dimensions_in(row.get('dimensions'))
+        dims = dimensions_in(row.get('dimensions'), row.get('form'))
         numbers = [row.get(name) if row.get(name) is not None else dims[i]
                    for i, name in enumerate(('thickness_in', 'width_in', 'length_in'))]
         if any(v is None for v in numbers):
             provenance['warnings'].append('Catalog dimensions are incomplete or have unresolved units')
+        if row.get('compliance_flags'):
+            provenance['warnings'].append('Catalog compliance flags are annotations, not verified compliance evidence')
         standard = row.get('standard')
         if standard and standard.strip().upper() == 'ASTM':
             standard = None
@@ -95,7 +97,7 @@ class SQLiteRepository:
         return Product(**provenance, catalog_id=row['catalog_id'], material=normalize(row.get('material')),
                        grade=normalize(row.get('grade')), form=normalize(row.get('form')),
                        dimensions=row.get('dimensions'), thickness_in=numbers[0], width_in=numbers[1], length_in=numbers[2],
-                       standard=standard, description=row.get('description') or '')
+                       standard=standard, description=row.get('description') or '', compliance_flags=row.get('compliance_flags'))
 
     def list_products(self):
         if 'product_catalog' not in self._tables():

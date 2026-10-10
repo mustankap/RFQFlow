@@ -1,0 +1,31 @@
+{
+  "rfq_id": "DB-BRANCH-INTEGRATION-001",
+  "is_synthetic": true,
+  "items": [
+    {
+      "line_id": "LINE-SHEET",
+      "raw_input": "15 pieces 304 stainless steel sheet, 0.060 in thickness, 48 x 96 in, ASTM A240; MTR required",
+      "material": "Stainless Steel",
+      "grade": "304",
+      "form": "Sheet",
+      "dimensions": "48x96 in",
+      "thickness_in": 0.060,
+      "quantity": 15,
+      "quantity_unit": "pieces",
+      "standard": "ASTM A240",
+      "requires_mtr": true
+    },
+    {
+      "line_id": "LINE-PIPE",
+      "raw_input": "10 lengths Carbon Steel Grade B Pipe, 2 in SCH 40, ASTM A53; domestic origin required",
+      "material": "Carbon Steel",
+      "grade": "Grade B",
+      "form": "Pipe",
+      "dimensions": "2 in SCH 40",
+      "quantity": 10,
+      "quantity_unit": "lengths",
+      "standard": "ASTM A53",
+      "country_of_origin_requirement": "US"
+    }
+  ]
+}

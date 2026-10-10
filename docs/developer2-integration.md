@@ -36,7 +36,10 @@ label as unresolved even when supplied by that older model. It does not infer
 that 16 gauge has an exact decimal equivalent or that `4x8` is in feet.
 
 Flat dimensions support an explicit **thickness × width × length followed by a
-shared unit**, such as `1/4 x 48 x 96 in` or `6 x 1200 x 2400 mm`. Unsupported mixed
+shared unit**, such as `1/4 x 48 x 96 in` or `6 x 1200 x 2400 mm`. For sheets and
+plates, a two-value size such as `48x96 in` provides width and length while thickness
+remains unknown. Pipe designations such as `2 in SCH 40` remain raw, unverified
+semantic-search text; no outside diameter or wall thickness is inferred. Unsupported mixed
 units and ambiguous strings remain unresolved. Flat numeric `thickness_in`,
 `width_in`, `length_in` are accepted as explicitly normalized values. Nested fields
 must have status `explicit`, `converted`, or `verified` to be used numerically;
@@ -122,3 +125,52 @@ compliance; synthetic document references are not real certificates.
 Standalone API error handlers are in `backend/app/retrieval/api.py`; adopt them
 when mounting the router in another application. Shared output models currently
 live under D2 and can be moved to `app/contracts/` once the team settles ownership.
+
+## Verified Developer 3 branch integration
+
+The snapshot from `origin/db-branch` commit
+`f44a80f43bc0a3f6def3dd40ee9b33295cc01e1d` was tested with live Nicrron and PRISM.
+It contains 2 catalog products, 4 vendor offers, and 2 historical quotes.
+Both product searches succeeded, retained both vendor offers per product, and
+returned both historical quotes for the stainless sheet. The SQLite file remained
+byte-for-byte unchanged. See [verification receipt](developer3-verification.json).
+
+The branch includes a virtual environment and independently generated Chroma files.
+Only `data/rudco_internal.db` is needed for D2 integration; build a new index through
+Nicrron. The source engine calls its seed data mock, but the database lacks per-record
+synthetic flags and original source references; outputs keep those fields unknown.
+Currency/price validity, complete dimensional data, benchmarks, and compliance
+documents still need to be supplied by D3. Raw `compliance_flags` are preserved as
+annotations, never certification evidence. Exact customer-ID filtering intentionally
+returns no history for these records until D3 supplies customer IDs.
+
+For a fresh local snapshot (use a new destination if you have local changes):
+
+```bash
+git fetch origin db-branch
+mkdir -p .local/developer3
+# Bash noclobber prevents overwriting an existing local snapshot.
+(set -o noclobber; git show origin/db-branch:data/rudco_internal.db > .local/developer3/rudco_internal.db)
+```
+
+Set these non-secret fields in your local `.env`:
+
+```dotenv
+RFQ_SQLITE_PATH=.local/developer3/rudco_internal.db
+RFQ_CHROMA_PATH=.local/chroma-developer3
+```
+
+Then run:
+
+```bash
+python -m backend.app.retrieval index
+python -m backend.app.retrieval query --rfq backend/data/fixtures/retrieval/developer3_rfq.json --as-of 2026-10-10
+```
+
+The original 12-case evaluation targets the separate six-product synthetic fixture,
+not this two-product catalog. To rerun that suite after configuring the D3 database:
+
+```bash
+python -m backend.app.retrieval index --db .local/demo.sqlite --chroma .local/chroma-hybrid
+python -m backend.app.retrieval evaluate --db .local/demo.sqlite --chroma .local/chroma-hybrid --as-of 2026-10-10
+```

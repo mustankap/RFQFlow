@@ -15,24 +15,30 @@ def normalize(value):
     return ALIASES.get(value, value) or None
 
 
-def dimensions_in(raw: str | None) -> tuple[float | None, float | None, float | None]:
-    """Only explicit thickness x width x length with one shared unit is supported.
+def dimensions_in(raw: str | None, form: str | None = None) -> tuple[float | None, float | None, float | None]:
+    """Normalize explicitly unit-bearing sizes; never infer gauge/pipe geometry.
 
-    '1/4 x 48 x 96 in' is explicit; '16ga 4x8' and mixed units remain unresolved.
-    No industrial convention or gauge equivalence is inferred.
+    Triples are thickness x width x length. For sheets/plates only, pairs are
+    width x length and thickness stays unknown. Mixed units remain unresolved.
     """
     if not raw:
         return None, None, None
     number = r'(\d+(?:\.\d+)?(?:/\d+)?)'
-    match = re.fullmatch(rf'\s*{number}\s*[x×]\s*{number}\s*[x×]\s*{number}\s*(inches|inch|in|mm|ft|feet|")\s*', raw, re.I)
-    if not match:
-        return None, None, None
-    try:
-        factor = {'mm': 1/25.4, 'ft': 12, 'feet': 12}.get(match[4].lower(), 1)
-        values = tuple(float(Fraction(match[i])) * factor for i in (1, 2, 3))
-        return values if all(v > 0 for v in values) else (None, None, None)
-    except (ValueError, ZeroDivisionError):
-        return None, None, None
+    unit = r'(inches|inch|in|mm|ft|feet|")'
+    counts = (3, 2) if normalize(form) in {'sheet', 'plate'} else (3,)
+    for count in counts:
+        pattern = r'\s*[x×]\s*'.join([number] * count)
+        match = re.fullmatch(rf'\s*{pattern}\s*{unit}\s*', raw, re.I)
+        if not match:
+            continue
+        try:
+            factor = {'mm': 1/25.4, 'ft': 12, 'feet': 12}.get(match[count+1].lower(), 1)
+            values = tuple(float(Fraction(match[i])) * factor for i in range(1, count+1))
+            if all(v > 0 for v in values):
+                return values if count == 3 else (None, *values)
+        except (ValueError, ZeroDivisionError):
+            pass
+    return None, None, None
 
 
 def adapt_line(data: dict, line_id: str | None = None) -> RFQLine:
@@ -41,7 +47,7 @@ def adapt_line(data: dict, line_id: str | None = None) -> RFQLine:
     if 'specification' in data:
         line = RFQLine.model_validate(data)
     else:
-        dims = dimensions_in(data.get('dimensions'))
+        dims = dimensions_in(data.get('dimensions'), data.get('form'))
         standard = data.get('standard')
         ambiguous = list(data.get('ambiguities', []))
         if standard and standard.strip().upper() == 'ASTM':
@@ -101,6 +107,13 @@ def query_text(spec: Specification) -> str:
     for label, value in [('thickness', spec.thickness.normalized_inches), ('width', spec.width.value_in), ('length', spec.length.value_in)]:
         if value is not None:
             parts.append(f'{label} {value:g} in')
+    # Raw ambiguous descriptors aid discovery only; they never become exact filters.
+    unresolved = [raw for raw, value in [
+        (spec.thickness.raw, spec.thickness.normalized_inches),
+        (spec.width.raw, spec.width.value_in), (spec.length.raw, spec.length.value_in)
+    ] if raw and value is None and all(v is None for v in dimensions_in(raw, spec.product_form))]
+    for raw in dict.fromkeys(unresolved):
+        parts.append(f'unverified dimension text: {raw}')
     if spec.requested_standard:
         parts.append(spec.requested_standard)
     return '; '.join(p for p in parts if p) or 'unspecified material request'

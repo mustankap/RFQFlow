@@ -85,6 +85,7 @@ class Product(Provenance):
     length_in: float | None = Field(default=None, gt=0)
     standard: str | None = None
     description: str = ''
+    compliance_flags: str | None = None
 
 
 class SupplierPrice(Provenance):

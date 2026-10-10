@@ -61,6 +61,12 @@ by `pricing_id`. Prices are serialized as decimal strings. Legacy `REAL` values
 are converted with a precision warning; currencies and dates are never guessed.
 See [D2 integration contract](docs/developer2-integration.md) for the field mapping.
 
+`db-branch` has now been tested against live Nicrron and PRISM: 2 products, 4 vendor
+offers, and 2 historical quotes retrieved without modifying SQLite. Use
+`backend/data/fixtures/retrieval/developer3_rfq.json` with `query --rfq` for that
+catalog. The integration guide explains selective import and the remaining data
+quality gaps; [verification receipt](docs/developer3-verification.json).
+
 ## Retrieval behavior
 
 1. Accept nested Phase 1 `ParsedRFQ` or simplified flat lines from the final doc/D3.
