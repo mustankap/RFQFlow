@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: rfqflow-api
+    runtime: python
+    plan: free
+    repo: https://github.com/mustankap/RFQFlow
+    branch: integration/rfq-to-quote
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python -m scripts.start_server
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: PUBLIC_DEMO
+        value: "1"
+      - key: MODEL_CALL_LIMIT
+        value: "100"
+      - key: REQUESTS_PER_HOUR
+        value: "30"
+      - key: NICRRON_API_KEY
+        sync: false
+      - key: NICRRON_MODEL
+        value: openai/gpt-4.1-mini
+      - key: NICRRON_EMBEDDING_MODEL
+        value: openai/text-embedding-3-small

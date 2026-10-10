@@ -89,3 +89,22 @@ def test_wrong_size_never_selected(workflow):
     assert out['overall_status']=='BLOCKED'
     assert out['items'][0]['selected_product'] is None
     assert out['final_quotation'] is None
+
+def test_parsed_upload_handoff_preserves_provenance(workflow,monkeypatch):
+    import backend.app.workflow.router as routes
+    parsed=fixture_parser(COMPLETE)
+    parsed.source_type='csv'
+    parsed.source_filename='buyer.csv'
+    for row,line in enumerate(parsed.items,2):
+        line.source_reference.update(source_filename='buyer.csv',row=row)
+    workflow.parser=lambda text: pytest.fail('Parsed upload must not be reparsed')
+    monkeypatch.setattr(routes,'workflow',workflow)
+    with TestClient(app) as client:
+        response=client.post('/api/quote/run',json={'parsed_rfq':parsed.model_dump()})
+        assert response.status_code==200
+        result=response.json()
+        assert result['rfq_id']==parsed.rfq_id
+        assert result['overall_status']=='QUOTE_READY'
+        assert [i['source_reference'] for i in result['parsed_rfq']['items']]==[i.source_reference for i in parsed.items]
+        assert client.post('/api/quote/run',json={'text':COMPLETE,'parsed_rfq':parsed.model_dump()}).status_code==422
+        assert client.post('/api/quote/run',json={}).status_code==422

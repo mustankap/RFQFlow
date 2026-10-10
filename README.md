@@ -167,3 +167,42 @@ embeddings plus Chroma produced two complete lines and a $1,980.00 synthetic quo
 The ambiguous gauge/4x8 request returned three questions and no quote; explicit
 buyer thickness/width/length answers resumed to a $2,400.00 synthetic quote.
 These are fixture-specific demo observations, not market or extraction-accuracy claims.
+
+## Streamlit demo interface
+
+Install declared dependencies once in the activated environment:
+
+```bash
+source .venv/bin/activate
+python -m pip install -r backend/requirements.txt
+```
+
+Terminal 1, from the repository root (Nicrron credentials configured server-side):
+
+```bash
+source .venv/bin/activate
+python -m backend.app.retrieval seed
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
+```
+
+Terminal 2, from the same repository root:
+
+```bash
+source .venv/bin/activate
+python -m streamlit run frontend/app.py --server.address 127.0.0.1 --server.port 8501 --browser.gatherUsageStats false
+```
+
+Open http://127.0.0.1:8501. Load Complete RFQ or Load Ambiguous RFQ, then click
+Process RFQ. For the ambiguous sample, answer thickness `0.060 in`, width `48 in`,
+and length `96 in`, then Submit Clarifications. Answers remain in the same RFQ
+session. Leave answers blank to keep those fields unresolved.
+
+For another backend, set `RFQFLOW_API_URL` in the Streamlit terminal. No model
+credentials are needed by Streamlit. Uploads support PDF/XLSX/CSV/EML/TXT: the UI
+calls `/api/parse-file`, then passes its complete `ParsedRFQ` to `/api/quote/run`
+using `parsed_rfq`. This preserves IDs and source locations without a second model
+extraction. `/api/quote/run` accepts exactly one of `text` or `parsed_rfq`.
+
+All prices remain synthetic demo data; missing compliance evidence prevents an
+approved quote. Keep one FastAPI worker, because sessions are in memory. Scanned
+PDFs, OCR and email attachments remain unsupported.

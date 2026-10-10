@@ -13,3 +13,5 @@ __pycache__/
 *.db-*
 chroma/
 .DS_Store
+
+.streamlit/secrets.toml

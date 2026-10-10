@@ -1,5 +1,6 @@
 """Small synchronous demo workflow. Sessions last until server restart."""
 import json
+import os
 import re
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
@@ -29,7 +30,10 @@ class QuoteWorkflow:
         self.prices = json.loads((DATA / 'demo_prices.json').read_text())
 
     def run(self, text):
-        rfq = self.parser(text)
+        return self.run_parsed(self.parser(text))
+
+    def run_parsed(self, rfq: ParsedRFQ):
+        rfq = ParsedRFQ.model_validate(rfq.model_dump()).model_copy(deep=True)
         with self.lock:
             self.sessions[rfq.rfq_id] = {'rfq': rfq, 'answers': [], 'revision': 1}
             return self.evaluate(self.sessions[rfq.rfq_id])
@@ -106,7 +110,7 @@ class QuoteWorkflow:
                 ready_lines.append(line)
         if ready_lines:
             subset = rfq.model_copy(update={'items':ready_lines})
-            retriever = self.retriever or RetrievalIndex(ROOT / '.local/chroma', NicrronEmbeddings())
+            retriever = self.retriever or RetrievalIndex(Path(os.getenv('CHROMA_PATH', str(ROOT / '.local/chroma'))), NicrronEmbeddings())
             evidence = retriever.retrieve_for_rfq(subset)
             by_id = {x['line_id']:x for x in evidence['items']}
             for line in ready_lines:

@@ -1,3 +1,4 @@
+from backend.app.deployment import reserve_model_call
 import os
 import time
 from pathlib import Path
@@ -31,6 +32,7 @@ def call_nicrron(messages):
 
     with httpx.Client(timeout=45) as client:
         for attempt in range(2):
+            reserve_model_call()
             response = client.post(
                 API_URL,
                 headers=headers,

@@ -329,6 +329,9 @@ def build_parsed_rfq(data, original_text):
 
     items = []
 
+    if len(data["lines"]) > 10:
+        raise ValueError("Demo supports up to 10 RFQ lines")
+
     for index, line in enumerate(data["lines"], start=1):
 
         raw = str(line.get("raw_input") or "").strip()
@@ -582,6 +585,9 @@ def parse_rfq_text(text):
 
     if not isinstance(text, str) or not text.strip():
         raise ValueError("RFQ text cannot be empty")
+
+    if len(text) > 20000:
+        raise ValueError("RFQ exceeds the 20,000 character demo limit")
 
     messages = [
         {

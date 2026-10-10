@@ -1,5 +1,7 @@
 """Nicrron embeddings only. No local-model or cross-model fallback."""
 
+from backend.app.deployment import reserve_model_call
+
 import math
 import os
 import time
@@ -21,6 +23,7 @@ class NicrronEmbeddings:
             return []
         for attempt in range(3):
             try:
+                reserve_model_call()
                 response = httpx.post(
                     "https://api.nicrron.ai/v1/embeddings",
                     headers={"Authorization": f"Bearer {self.api_key}"},
