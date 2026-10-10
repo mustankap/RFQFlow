@@ -1,0 +1,143 @@
+{
+  "rfq_id": "SYNTH-RFQ-001",
+  "is_synthetic": true,
+  "source_type": "text",
+  "source_filename": null,
+  "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long\n5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long\n10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long",
+  "items": [
+    {
+      "line_id": "LINE-001",
+      "original_text": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long",
+      "source_reference": {
+        "document_id": "SYNTH-RFQ-DOC-001",
+        "page": null,
+        "sheet": null,
+        "row": 1,
+        "text_excerpt": "12 pieces 304 stainless steel sheet, 0.06 in thick, 48 in wide x 96 in long"
+      },
+      "specification": {
+        "material_family": "stainless steel",
+        "material_grade": "304",
+        "product_form": "sheet",
+        "quantity": 12,
+        "quantity_unit": "pieces",
+        "thickness": {
+          "raw": "0.06 in",
+          "value": 0.06,
+          "unit": "in",
+          "normalized_inches": 0.06,
+          "conversion_status": "explicit"
+        },
+        "width": {
+          "raw": "48 in",
+          "value_in": 48,
+          "unit_status": "explicit"
+        },
+        "length": {
+          "raw": "96 in",
+          "value_in": 96,
+          "unit_status": "explicit"
+        },
+        "diameter_in": null,
+        "requested_standard": null,
+        "requested_certifications": [],
+        "country_of_origin_requirement": null,
+        "finish": null,
+        "special_requirements": []
+      },
+      "missing_fields": [],
+      "ambiguities": [],
+      "extraction_status": "parsed"
+    },
+    {
+      "line_id": "LINE-002",
+      "original_text": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long",
+      "source_reference": {
+        "document_id": "SYNTH-RFQ-DOC-001",
+        "page": null,
+        "sheet": null,
+        "row": 2,
+        "text_excerpt": "5 pieces A36 carbon steel plate, 0.25 in thick, 48 in wide x 96 in long"
+      },
+      "specification": {
+        "material_family": "carbon steel",
+        "material_grade": "A36",
+        "product_form": "plate",
+        "quantity": 5,
+        "quantity_unit": "pieces",
+        "thickness": {
+          "raw": "0.25 in",
+          "value": 0.25,
+          "unit": "in",
+          "normalized_inches": 0.25,
+          "conversion_status": "explicit"
+        },
+        "width": {
+          "raw": "48 in",
+          "value_in": 48,
+          "unit_status": "explicit"
+        },
+        "length": {
+          "raw": "96 in",
+          "value_in": 96,
+          "unit_status": "explicit"
+        },
+        "diameter_in": null,
+        "requested_standard": null,
+        "requested_certifications": [],
+        "country_of_origin_requirement": null,
+        "finish": null,
+        "special_requirements": []
+      },
+      "missing_fields": [],
+      "ambiguities": [],
+      "extraction_status": "parsed"
+    },
+    {
+      "line_id": "LINE-003",
+      "original_text": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long",
+      "source_reference": {
+        "document_id": "SYNTH-RFQ-DOC-001",
+        "page": null,
+        "sheet": null,
+        "row": 3,
+        "text_excerpt": "10 pieces 6061 aluminum plate, 0.25 in thick, 24 in wide x 48 in long"
+      },
+      "specification": {
+        "material_family": "aluminum",
+        "material_grade": "6061",
+        "product_form": "plate",
+        "quantity": 10,
+        "quantity_unit": "pieces",
+        "thickness": {
+          "raw": "0.25 in",
+          "value": 0.25,
+          "unit": "in",
+          "normalized_inches": 0.25,
+          "conversion_status": "explicit"
+        },
+        "width": {
+          "raw": "24 in",
+          "value_in": 24,
+          "unit_status": "explicit"
+        },
+        "length": {
+          "raw": "48 in",
+          "value_in": 48,
+          "unit_status": "explicit"
+        },
+        "diameter_in": null,
+        "requested_standard": null,
+        "requested_certifications": [],
+        "country_of_origin_requirement": null,
+        "finish": null,
+        "special_requirements": []
+      },
+      "missing_fields": [],
+      "ambiguities": [],
+      "extraction_status": "parsed"
+    }
+  ],
+  "unparsed_segments": [],
+  "errors": []
+}

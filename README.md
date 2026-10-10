@@ -1,0 +1,108 @@
+# RFQFlow / AlloyQuote
+
+Phase 1 turns RFQs into structured requirements and traceable retrieval evidence.
+The master specification is [phase1.md](phase1.md).
+
+This starter lets Developer 2 work independently: a synthetic parsed RFQ stands in
+for Developer 1, and a synthetic catalog stands in for Developer 3. Embeddings
+use **Nicrron**, and Chroma persists the vectors locally. No local embedding model
+or fake embeddings are used by the application.
+
+## Run the retrieval starter
+
+Python 3.11+ is required. Run these commands from the repository root:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r backend/requirements.txt
+cp -n .env.example .env
+```
+
+Set `NICRRON_API_KEY` in `.env` locally. Do not commit it. The configured model is
+`openai/text-embedding-3-small`, listed in the
+[Nicrron embedding documentation](https://nicrron.ai/docs/embeddings).
+Account access and credits are still required. Calls use
+`https://api.nicrron.ai/v1/embeddings` with a fixed model for both indexing and queries.
+
+```bash
+python -m backend.app.retrieval seed
+python -m backend.app.retrieval query
+python -m pytest backend/tests -q
+```
+
+`seed` embeds six fictional catalog products into `.local/chroma`.
+`query` reads three fully specified synthetic RFQ lines and searches the existing
+index; it does not rebuild it. First seed, then query. Missing keys and failed API
+calls stop with a nonzero exit code; they do not activate a fallback provider.
+Seeding again synchronizes this demo collection, including removing products no
+longer in the supplied catalog. Use a separate `--db` path for other datasets.
+
+```bash
+python -m backend.app.retrieval seed --db .local/another-demo --catalog path/to/catalog.json
+python -m backend.app.retrieval query --db .local/another-demo --rfq path/to/parsed_rfq.json
+```
+
+Results retain line IDs, synthetic flags, source IDs, model identity, and dimension
+conflicts. Material, grade, and form use exact metadata filters when supplied.
+Distances measure cosine distance (lower is closer), not compatibility confidence.
+All results are candidates only. Historical prices and compliance evidence are
+empty and explicitly reported as unavailable.
+
+## Replace the temporary inputs
+
+| Temporary component | Replacement |
+| --- | --- |
+| `backend/data/fixtures/retrieval/parsed_rfq_ideal.json` | Developer 1's `ParsedRFQ`; call `retrieve_for_rfq()` directly |
+| `backend/data/fixtures/retrieval/supplier_catalog.json` | Developer 3's SQLite records mapped to `Product` and passed to `build_index()` |
+| `backend/app/retrieval/models.py` | Team-approved shared Pydantic contracts |
+
+The fixture loader is the only JSON-catalog adapter. Retrieval accepts records,
+not a hardcoded catalog. Chroma is a rebuildable index, not the canonical database.
+Changing embedding models requires a fresh `--db` directory and reindexing every
+product with that model. Never mix query and catalog embedding models.
+
+Draft models and output fields are local to Developer 2; they are not a declaration
+that all three developers have approved the shared contracts. Exact filters assume
+upstream normalized vocabulary. This starter is semantic search with metadata
+filters, not the full SQLite/semantic hybrid retrieval described in `phase1.md`.
+
+## Ownership
+
+| Owner | Component |
+| --- | --- |
+| Developer 1 | RFQ ingestion, parsing, ingestion API, application entry point |
+| Developer 2 (this starter) | Embeddings, Chroma indexing, retrieval, retrieval API |
+| Developer 3 | SQLite, canonical catalog, historical data, data quality |
+| Named owner to agree as a team | Shared contracts and sponsor integration |
+
+Continue D2 development on `feature/rag-retrieval`. Agree on contracts before
+integrating the three components. No parser, D3 database implementation, agent
+loop, pricing decisions, or user interface is included here.
+
+## Ninoo development workflow
+
+Ninoo Code is the sponsor's development assistant; Nicrron is the runtime model
+gateway. Follow the [official install guide](https://ninoo.ai/download/), then:
+
+```bash
+ninoo login
+ninoo -m nicrron/coding "Review backend/app/retrieval and backend/tests against phase1.md Developer 2 responsibilities. Report issues without editing files. Do not read .env or other credentials."
+```
+
+Use Ninoo for an actual development/review task and retain its observed result for
+the event demonstration. Installing it alone does not demonstrate sponsor use.
+The CLI can also authenticate with `NINOO_API_KEY` as documented in
+[Ninoo configuration](https://ninoo.ai/docs/).
+
+## Verification and remaining Phase 1 work
+
+Tests use clearly labeled test embeddings and mocked HTTP responses to verify
+contracts, Nicrron request handling, persistent Chroma storage, filtering, and
+conflicts without spending API credits. They do **not** establish live Nicrron
+availability or semantic retrieval accuracy. Run `seed` and `query` with a real key
+to verify those separately.
+
+Still required: canonical SQLite integration, full shared evidence models, hybrid
+ranking, historical/pricing/compliance retrieval, retrieval evaluation, API routes,
+and real PRISM tracing/guardrail/evaluator/Knowledge Base integration.
