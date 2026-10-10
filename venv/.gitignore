@@ -1,0 +1,10 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Ignore python virtual environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Ignore local runtime database and vector directories
+data/
+*.db
