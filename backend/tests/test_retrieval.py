@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import httpx
+import chromadb
 import pytest
 from pydantic import ValidationError
 
@@ -79,6 +80,29 @@ def test_model_mismatch_is_rejected(index):
         index.load_index()
 
 
+def test_wrong_distance_metric_rejected(tmp_path):
+    chromadb.PersistentClient(path=str(tmp_path)).create_collection(
+        COLLECTION, embedding_function=None,
+        metadata={"embedding_model": TestEmbeddings.model},
+        configuration={"hnsw": {"space": "l2"}},
+    )
+    with pytest.raises(ValueError, match="cosine"):
+        RetrievalIndex(tmp_path, TestEmbeddings()).load_index()
+
+
+def test_changed_query_dimensions_rejected(index, rfq):
+    index.embedder.embed = lambda texts: [[1.0, 0.0] for _ in texts]
+    with pytest.raises(ValueError, match="Query embedding dimensions"):
+        index.retrieve_for_rfq(rfq)
+
+
+def test_numerical_roundoff_is_not_a_dimension_conflict(index, rfq):
+    rfq.items[0].specification.thickness.normalized_inches = .06000000000000001
+    candidate = next(c for c in index.retrieve_for_rfq(rfq)["items"][0]["supplier_candidates"]
+                     if c["sku"] == "DEMO-SS304-060")
+    assert candidate["potential_conflicts"] == []
+
+
 def test_bad_fixtures_rejected(catalog, rfq):
     data = catalog.model_dump()
     data["products"].append(data["products"][0])
@@ -111,10 +135,18 @@ def test_nicrron_endpoint_model_and_response_order(monkeypatch):
         assert url == "https://api.nicrron.ai/v1/embeddings"
         assert kwargs["json"] == {"model": "openai/text-embedding-3-small", "input": ["one", "two"]}
         assert kwargs["headers"]["Authorization"] == "Bearer test-key-not-real"
-        return httpx.Response(200, json={"data": [{"index": 1, "embedding": [0, 1]}, {"index": 0, "embedding": [1, 0]}]})
+        return httpx.Response(200, json={"model": "openai/text-embedding-3-small", "data": [{"index": 1, "embedding": [0, 1]}, {"index": 0, "embedding": [1, 0]}]})
 
     monkeypatch.setattr(httpx, "post", post)
     assert NicrronEmbeddings().embed(["one", "two"]) == [[1, 0], [0, 1]]
+
+
+def test_provider_model_substitution_rejected(monkeypatch):
+    monkeypatch.setenv("NICRRON_API_KEY", "test-key-not-real")
+    monkeypatch.setattr(httpx, "post", lambda *args, **kwargs: httpx.Response(
+        200, json={"model": "different-model", "data": [{"index": 0, "embedding": [1, 0]}]}))
+    with pytest.raises(ValueError, match="model identity"):
+        NicrronEmbeddings().embed(["one"])
 
 
 def test_nicrron_retries_are_bounded(monkeypatch):

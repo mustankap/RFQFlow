@@ -61,6 +61,10 @@ The fixture loader is the only JSON-catalog adapter. Retrieval accepts records,
 not a hardcoded catalog. Chroma is a rebuildable index, not the canonical database.
 Changing embedding models requires a fresh `--db` directory and reindexing every
 product with that model. Never mix query and catalog embedding models.
+The client checks the model identity returned by Nicrron. Index loading verifies
+the actual cosine metric, and stored vector dimensions are checked before querying.
+Dimension comparisons allow only numerical roundoff (1e-9 inches), not a material
+manufacturing tolerance or an approval of compatibility.
 
 Draft models and output fields are local to Developer 2; they are not a declaration
 that all three developers have approved the shared contracts. Exact filters assume
@@ -102,6 +106,19 @@ contracts, Nicrron request handling, persistent Chroma storage, filtering, and
 conflicts without spending API credits. They do **not** establish live Nicrron
 availability or semantic retrieval accuracy. Run `seed` and `query` with a real key
 to verify those separately.
+
+### Observed live verification — October 10, 2026
+
+- Nicrron returned `openai/text-embedding-3-small` vectors with 1,536 dimensions.
+- All six synthetic catalog records were persisted in local Chroma.
+- A separate query process returned the expected SKU first on all three ideal
+  synthetic RFQ lines, with source IDs and candidate-only labels preserved.
+- Ninoo Code completed a read-only code review through `nicrron/coding`. Its
+  actionable metric, model-consistency, and floating-point findings prompted
+  additional validation and regression tests.
+
+These are observations on the bundled fixtures, not a general accuracy claim.
+Local query output and the Ninoo review are saved under gitignored `.local/`.
 
 Still required: canonical SQLite integration, full shared evidence models, hybrid
 ranking, historical/pricing/compliance retrieval, retrieval evaluation, API routes,

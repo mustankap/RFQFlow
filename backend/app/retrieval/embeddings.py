@@ -32,7 +32,10 @@ class NicrronEmbeddings:
                     raise RuntimeError("Nicrron embedding request failed after three attempts") from exc
             else:
                 if response.is_success:
-                    return self._vectors(response.json(), len(texts))
+                    payload = response.json()
+                    if payload.get("model") not in {self.model, self.model.split("/")[-1]}:
+                        raise ValueError("Nicrron returned a different or missing embedding model identity")
+                    return self._vectors(payload, len(texts))
                 if response.status_code != 429 and response.status_code < 500:
                     raise RuntimeError(f"Nicrron embeddings returned HTTP {response.status_code}; check key/model access")
                 if attempt == 2:
