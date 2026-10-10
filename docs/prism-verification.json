@@ -1,0 +1,42 @@
+{
+  "verified_on": "2026-10-10",
+  "agent_name": "rudco-rfq-phase1",
+  "session_id": "5da117f2-3376-42d9-91ae-ab730567bbbf",
+  "trace_ids": [
+    "8716fb89-3f36-42f2-9b5d-1bd15ef18354",
+    "fb032afa-d904-43c8-a88d-08004bb3149d",
+    "84cfb3a5-43d1-45ea-8299-d986b6651594"
+  ],
+  "delivery_status": "delivered",
+  "overall": "connected",
+  "live_connected": true,
+  "app_trace_count": 3,
+  "blocked_step": null,
+  "stages": [
+    {
+      "id": "credential_created",
+      "status": "done"
+    },
+    {
+      "id": "sdk_installed",
+      "status": "done"
+    },
+    {
+      "id": "event_received",
+      "status": "done"
+    },
+    {
+      "id": "trace_normalized",
+      "status": "done"
+    },
+    {
+      "id": "analysis_ready",
+      "status": "done"
+    }
+  ],
+  "remaining": [
+    "PRISM Evaluators Hub task",
+    "PRISM Guardrail demonstration",
+    "PRISM Knowledge Base grounding demonstration"
+  ]
+}

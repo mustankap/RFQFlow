@@ -63,3 +63,16 @@ Only a documented inline enforcement path can claim prevention.
 These dashboard actions require the project's account/access and are not silently
 performed through guessed endpoints. The retrieval code does not report a
 successful PRISM evaluator, Guardrail, or Knowledge Base result until one exists.
+
+## Observed live verification — October 10, 2026
+
+A real three-line RFQ retrieval run delivered three Nicrron embedding traces and
+its retrieval trajectory. PRISM setup-doctor returned `overall: connected`,
+`live_connected: true`, `app_trace_count: 3`, and `blocked_step: null`. All five
+stages were complete, including trace normalization and analysis. The application
+returned all three lines with status `ok` and no PRISM delivery warnings.
+
+Sanitized receipt: [prism-verification.json](prism-verification.json). Credentials
+and account credential metadata are excluded. This verifies ingestion and
+automatic analysis; it does not claim completion of the separate Evaluators Hub,
+Guardrail, or Knowledge Base demonstrations described above.

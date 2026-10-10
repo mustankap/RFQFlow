@@ -149,5 +149,10 @@ known relevant products. The two no-match cases use empty-result checks and are
 excluded from recall averages. These fixtures are deliberately small; this is not
 a claim of general retrieval accuracy. [Observed results](docs/evaluation-results.json).
 
+PRISM live verification also succeeded on October 10, 2026: three application
+traces received and analyzed, retrieval trajectory delivered, and setup-doctor
+reported connected with no blocked stage. See [verification receipt](docs/prism-verification.json).
+The separate Evaluators Hub, Guardrail and Knowledge Base demonstrations remain pending.
+
 The implementation retrieves evidence and does not generate quotes, approve
 compliance, calculate selling prices, or implement the Phase 2 agent loop.
