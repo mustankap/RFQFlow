@@ -1,16 +1,14 @@
-# RFQFlow / AlloyQuote
+# RFQFlow / AlloyQuote — Developer 2 retrieval
 
-Phase 1 turns RFQs into structured requirements and traceable retrieval evidence.
-The master specification is [phase1.md](phase1.md).
+[phase-prob.md](phase-prob.md) is the final architecture. Developer 2 implements
+retrieval capabilities for the agent: **SQLite structured search + Nicrron
+embeddings + persistent Chroma semantic search**, returning typed, sourced evidence.
+Developer 1 owns ingestion; Developer 3 owns canonical data. The Phase 2/shared
+agent makes workflow decisions and calls separate validation/pricing tools.
 
-This starter lets Developer 2 work independently: a synthetic parsed RFQ stands in
-for Developer 1, and a synthetic catalog stands in for Developer 3. Embeddings
-use **Nicrron**, and Chroma persists the vectors locally. No local embedding model
-or fake embeddings are used by the application.
+## Run locally
 
-## Run the retrieval starter
-
-Python 3.11+ is required. Run these commands from the repository root:
+Python 3.11+; commands run from the repository root:
 
 ```bash
 python3.11 -m venv .venv
@@ -19,90 +17,148 @@ python -m pip install -r backend/requirements.txt
 cp -n .env.example .env
 ```
 
-Set `NICRRON_API_KEY` in `.env` locally. Do not commit it. The configured model is
-`openai/text-embedding-3-small`, listed in the
-[Nicrron embedding documentation](https://nicrron.ai/docs/embeddings).
-Account access and credits are still required. Calls use
-`https://api.nicrron.ai/v1/embeddings` with a fixed model for both indexing and queries.
+Set `NICRRON_API_KEY` in the gitignored `.env`. The runtime exclusively uses
+Nicrron's documented `openai/text-embedding-3-small` at
+`https://api.nicrron.ai/v1/embeddings`. No local or fake model fallback is enabled.
 
 ```bash
-python -m backend.app.retrieval seed
-python -m backend.app.retrieval query
+# Create a NEW synthetic SQLite database (refuses to overwrite existing files).
+python -m backend.app.retrieval seed-demo
+# Embed the SQLite catalog. Repeating unchanged indexing makes no model calls.
+python -m backend.app.retrieval index
+# Query the persisted index and current SQLite evidence.
+python -m backend.app.retrieval query --as-of 2026-10-10
+# Run the 12 labeled synthetic evaluation cases against real Nicrron embeddings.
+python -m backend.app.retrieval evaluate --as-of 2026-10-10 --output .local/evaluation-results.json
+# Unit/integration tests use test-only embeddings; no API keys are needed.
 python -m pytest backend/tests -q
 ```
 
-`seed` embeds six fictional catalog products into `.local/chroma`.
-`query` reads three fully specified synthetic RFQ lines and searches the existing
-index; it does not rebuild it. First seed, then query. Missing keys and failed API
-calls stop with a nonzero exit code; they do not activate a fallback provider.
-Seeding again synchronizes this demo collection, including removing products no
-longer in the supplied catalog. Use a separate `--db` path for other datasets.
+If `.local/demo.sqlite` already exists, skip `seed-demo`. To create another fixture
+use `seed-demo --db .local/another-demo.sqlite`; pass that same `--db` to index/query.
+`seed` is an alias for `index` for existing users; it now reads SQLite.
 
-```bash
-python -m backend.app.retrieval seed --db .local/another-demo --catalog path/to/catalog.json
-python -m backend.app.retrieval query --db .local/another-demo --rfq path/to/parsed_rfq.json
+`--db` now means a **SQLite file**. `--chroma` means the vector directory.
+Defaults are `.local/demo.sqlite` and `.local/chroma-hybrid`. The older starter
+`.local/chroma` is left untouched and is no longer used.
+
+## Connect Developer 3's database
+
+```dotenv
+RFQ_SQLITE_PATH=/absolute/path/to/developer3.sqlite
+RFQ_CHROMA_PATH=/absolute/path/to/chroma-hybrid
 ```
 
-Results retain line IDs, synthetic flags, source IDs, model identity, and dimension
-conflicts. Material, grade, and form use exact metadata filters when supplied.
-Distances measure cosine distance (lower is closer), not compatibility confidence.
-All results are candidates only. Historical prices and compliance evidence are
-empty and explicitly reported as unavailable.
+Run `index` again. The adapter understands the exact table names and core columns
+provided by Developer 3: `product_catalog`, `vendor_pricing`, `historical_quotes`.
+It opens their file in SQLite **read-only** mode. Optional extended columns and
+`source_documents`, `market_benchmarks`, `compliance_documents` enable richer
+retrieval. Missing tables/metadata produce explicit warnings. No automatic D3
+schema migration or synthetic data insertion occurs.
 
-## Replace the temporary inputs
+Each catalog product has a `catalog_id`; multiple vendor offers remain distinct
+by `pricing_id`. Prices are serialized as decimal strings. Legacy `REAL` values
+are converted with a precision warning; currencies and dates are never guessed.
+See [D2 integration contract](docs/developer2-integration.md) for the field mapping.
 
-| Temporary component | Replacement |
-| --- | --- |
-| `backend/data/fixtures/retrieval/parsed_rfq_ideal.json` | Developer 1's `ParsedRFQ`; call `retrieve_for_rfq()` directly |
-| `backend/data/fixtures/retrieval/supplier_catalog.json` | Developer 3's SQLite records mapped to `Product` and passed to `build_index()` |
-| `backend/app/retrieval/models.py` | Team-approved shared Pydantic contracts |
+`db-branch` has now been tested against live Nicrron and PRISM: 2 products, 4 vendor
+offers, and 2 historical quotes retrieved without modifying SQLite. Use
+`backend/data/fixtures/retrieval/developer3_rfq.json` with `query --rfq` for that
+catalog. The integration guide explains selective import and the remaining data
+quality gaps; [verification receipt](docs/developer3-verification.json).
 
-The fixture loader is the only JSON-catalog adapter. Retrieval accepts records,
-not a hardcoded catalog. Chroma is a rebuildable index, not the canonical database.
-Changing embedding models requires a fresh `--db` directory and reindexing every
-product with that model. Never mix query and catalog embedding models.
+## Retrieval behavior
 
-Draft models and output fields are local to Developer 2; they are not a declaration
-that all three developers have approved the shared contracts. Exact filters assume
-upstream normalized vocabulary. This starter is semantic search with metadata
-filters, not the full SQLite/semantic hybrid retrieval described in `phase1.md`.
+1. Accept nested Phase 1 `ParsedRFQ` or simplified flat lines from the final doc/D3.
+2. Normalize material vocabulary, preserve unresolved units and missing grades.
+3. Build query text from the **current structured specification**, so clarification
+   updates do not embed stale original text.
+4. Search SQLite using parameterized material/grade/form predicates.
+5. Search Chroma, limiting semantic results by material when known.
+6. Combine SQL and semantic ranks with reciprocal rank fusion (`1 / (60 + rank)`),
+   deduplicate by catalog ID, and return known conflicts separately.
+7. Retrieve supplier prices, historical quotes, benchmarks and compliance records
+   for primary candidates; preserve record identifiers, sources and dates.
 
-## Ownership
+Primary candidates have no **known** specification conflict. They are not approved
+matches: missing dimensions, absent standards, certifications and origin requirements
+remain visible under `unchecked_requirements`. Dimension comparisons allow numerical
+roundoff only (1e-9 inches), not a manufacturing tolerance. Unknown products return
+empty results, never invented IDs. Semantic failure returns SQL results with
+`status: degraded`; it does not silently switch embedding providers.
 
-| Owner | Component |
-| --- | --- |
-| Developer 1 | RFQ ingestion, parsing, ingestion API, application entry point |
-| Developer 2 (this starter) | Embeddings, Chroma indexing, retrieval, retrieval API |
-| Developer 3 | SQLite, canonical catalog, historical data, data quality |
-| Named owner to agree as a team | Shared contracts and sponsor integration |
+Chroma collections are identified by model and canonical catalog content hash.
+Partial builds cannot be queried. Changed SQLite catalog contents cause explicit
+SQL-only degradation until `index` is run again. Pricing changes are read directly
+from SQLite and do not require catalog reindexing. Old vector snapshots remain on
+disk; choose a new Chroma directory or remove obsolete local snapshots manually
+when no longer needed. This demo loads the small catalog in memory per run; it is
+not tuned for millions of products.
 
-Continue D2 development on `feature/rag-retrieval`. Agree on contracts before
-integrating the three components. No parser, D3 database implementation, agent
-loop, pricing decisions, or user interface is included here.
+## Python functions and HTTP API
 
-## Ninoo development workflow
+```python
+from backend.app.retrieval.config import create_service
 
-Ninoo Code is the sponsor's development assistant; Nicrron is the runtime model
-gateway. Follow the [official install guide](https://ninoo.ai/download/), then:
-
-```bash
-ninoo login
-ninoo -m nicrron/coding "Review backend/app/retrieval and backend/tests against phase1.md Developer 2 responsibilities. Report issues without editing files. Do not read .env or other credentials."
+service = create_service()
+evidence = service.retrieve_for_rfq(parsed_rfq)
+line_result = service.retrieve_for_line(parsed_line)
+candidates = service.search_supplier_catalog(parsed_line)
+prices = service.retrieve_supplier_prices("DEMO-SS304-060")
+history = service.retrieve_historical_quotes("DEMO-SS304-060", customer_id="CUST-A")
+benchmarks = service.retrieve_market_benchmarks("DEMO-SS304-060")
+documents = service.retrieve_compliance_evidence("DEMO-SS304-060")
 ```
 
-Use Ninoo for an actual development/review task and retain its observed result for
-the event demonstration. Installing it alone does not demonstrate sponsor use.
-The CLI can also authenticate with `NINOO_API_KEY` as documented in
-[Ninoo configuration](https://ninoo.ai/docs/).
+Each returns a Pydantic model; call `.model_dump(mode="json")` for JSON-safe values.
+Single-evidence methods return an `EvidenceSet` containing their named collection
+and warnings. A supplied `customer_id` is an exact scope, never a fallback to other
+customers. Without it, historical rows are labeled cross-customer reference only.
+Customer identity/authorization must be supplied by the calling application.
 
-## Verification and remaining Phase 1 work
+```bash
+python -m uvicorn backend.app.retrieval.api:app --host 127.0.0.1 --port 8000
+```
 
-Tests use clearly labeled test embeddings and mocked HTTP responses to verify
-contracts, Nicrron request handling, persistent Chroma storage, filtering, and
-conflicts without spending API credits. They do **not** establish live Nicrron
-availability or semantic retrieval accuracy. Run `seed` and `query` with a real key
-to verify those separately.
+Open `http://127.0.0.1:8000/docs`. `POST /api/retrieval/rfq` accepts
+`{"parsed_rfq": {...}, "top_k": 5}`. `POST /api/retrieval/catalog` accepts
+`{"line": {...}, "top_k": 5}`. GET endpoints under
+`/api/retrieval/products/{catalog_id}/` expose `prices`, `history`, `benchmarks`,
+and `compliance`. Unknown IDs return empty evidence with a warning. Invalid inputs
+return 422; unavailable SQLite returns 503. This is a local development API without
+authentication; bind to localhost. Developer 1 can mount the exported router in
+`backend/app/api/retrieval_routes.py` and adopt the standalone app's error handlers.
 
-Still required: canonical SQLite integration, full shared evidence models, hybrid
-ranking, historical/pricing/compliance retrieval, retrieval evaluation, API routes,
-and real PRISM tracing/guardrail/evaluator/Knowledge Base integration.
+## Sponsors and evidence
+
+- **Nicrron:** real runtime embeddings; model identity/dimensions checked; bounded
+  retries and timeouts. [Official embedding API](https://nicrron.ai/docs/embeddings).
+- **Ninoo Code:** used for actual read-only reviews of this implementation.
+  [Official workflow](https://ninoo.ai/docs/). Review transcripts are in gitignored
+  `.local/ninoo-review.txt` and `.local/ninoo-hybrid-review.txt` on this workstation.
+- **PRISM:** actual embedding events can be sent to `/api/traces`; the installed
+  `prismtrace-sdk==0.5.1` submits retrieval trajectories. Set `PRISMTRACE_API_KEY`
+  and `PRISMTRACE_PROJECT_ID` to enable delivery. Runs have unique session IDs and
+  agent name `rudco-rfq-phase1`. Local trace JSON records delivery status, latency,
+  model, token usage and output; no credentials or vectors are logged.
+
+Use **Custom orchestration** in PRISM onboarding. See
+[PRISM handoff](docs/prism-handoff.md) for setup, grounding reference export and the
+remaining dashboard actions. Local tests and exported references do not substitute
+for a real PRISM evaluator run or Knowledge Base grounding result.
+
+## Verified scope
+
+Live Nicrron testing on October 10, 2026: six indexed products; **12/12 labeled
+synthetic cases passed**, mean Recall@3 and Recall@5 of 1.0 over the ten cases with
+known relevant products. The two no-match cases use empty-result checks and are
+excluded from recall averages. These fixtures are deliberately small; this is not
+a claim of general retrieval accuracy. [Observed results](docs/evaluation-results.json).
+
+PRISM live verification also succeeded on October 10, 2026: three application
+traces received and analyzed, retrieval trajectory delivered, and setup-doctor
+reported connected with no blocked stage. See [verification receipt](docs/prism-verification.json).
+The separate Evaluators Hub, Guardrail and Knowledge Base demonstrations remain pending.
+
+The implementation retrieves evidence and does not generate quotes, approve
+compliance, calculate selling prices, or implement the Phase 2 agent loop.
